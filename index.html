@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+    <title>我的导航栏</title>
+    <link rel="stylesheet" type="text/css" href="./style.css">
+</head>
+<body>
+    <head></head>
+    <main >
+        <div class="wrapper" id='main1'>
+            
+        </div>
+    </main>
+    <footer></footer>
+    <script>
+        //1.初始化数据
+        var hashA = init()
+        var keys = hashA['keys']
+        var hash = hashA['hash'] 
+       
+      
+        //2.生成键盘
+        //遍历keys,生成kbd标签
+       generateKeyboard(keys,hash)
+
+  
+    //3.监听用户动作
+   listenToUser(hash)
+    //下面是私有的函数
+    function init(){   
+        var keys ={
+            '0': {0:'q',1:'w',2:'e',3:'r',4:'t',5:'y',6:'u',7:'i',8:'o',9:'p',length:10},
+            '1': {0:'a',1:'s',2:'d',3:'f',4:'g',5:'h',6:'j',7:'k',8:'l',length:9},
+            '2': {0:'z',1:'x',2:'c',3:'v',4:'b',5:'n',6:'m',length:7},
+            'length': 3
+        }
+        var hash={
+            'q': 'qq.com',
+            'w': 'weibo.com',
+            'e': 'ele.me',
+            'r': 'renren.com',
+            't': 'tianyan.com',
+            'y': 'youtube.com',
+            'u': 'uc.com',
+            'i': 'iqiyi.com',
+            'o': 'oprea.com',
+            'p': undefined,
+            'a': 'acfun.tv',
+            's': 'sohu.com',
+            'z': 'zhihu.com',
+            'b': 'bilibili.com',
+            'm': 'www.mcdonalds.com.cn',
+        }
+        //取出localStorage中的zzz对应的hash
+        var hashInLocalStorage = getFromlocalStorage('zzz')
+        if(hashInLocalStorage){
+            hash = hashInLocalStorage
+        }
+        return{
+            "keys": keys,
+            "hash": hash,
+        }
+     }
+
+    function generateKeyboard(keys,hash){
+        for(var index=0;index< keys['length'];index = index+1 ){        
+        var div1 = tag('div')
+        div1.className = 'row'
+
+
+        main1.appendChild(div1)
+
+
+        var row = keys[index]  //第一个数组 第二个数组 第三个数组 
+            for(var index2 = 0;index2<row['length'];index2 = index2+1){    // 0-9 0-8 0-6
+                var span1 = createSpan(row[index2])
+
+
+                var button1 = createButton(row[index2])
+               
+
+                var img1=createImage(hash[row[index2]])
+                
+
+                var kbd1 = tag('kbd')
+                kbd1.className = 'key'
+                kbd1.appendChild(span1)
+                kbd1.appendChild(img1)
+                kbd1.appendChild(button1)
+
+
+                div1.appendChild(kbd1)
+            }
+        }
+    }
+
+    function listenToUser(hash){
+        document.onkeypress = function(asdf){
+        var key = asdf['key']// q w e
+        var website = hash[key]
+        //location.href = 'http://'+website
+        window.open('http://'+website,'_blank')
+        }
+    }
+        
+    function getFromlocalStorage(name){
+           return JSON.parse(localStorage.getItem(name)||'null')
+        }
+
+    function tag(tagName){
+          return document.createElement(tagName)
+            }
+    function createSpan(textContent){
+            var span1= tag('span')
+            span1.textContent = textContent
+            span1.className = 'text'
+            return span1
+        }
+
+    function createButton(id){
+        var button1 = tag('button')
+        button1.textContent = '编辑'
+        button1.id = id
+        button1.onclick = function(asdf){
+            //asdf['target']就是用户点击的元素
+            var button2 = asdf['target']
+            var img2 = button2.previousSibling
+            var key = button2['id']// q w e r t
+            var x = prompt('给我一个网址')// qq.com
+            hash[key] = x  //hash 变更
+            img2.src ='http://'+x+'favicon.ico'
+             img2.onerror = function(xxx){
+            xxx.target.src = '//i.loli.net/2019/02/27/5c76629caa708.jpg'
+        }
+            localStorage.setItem('zzz',JSON.stringify(hash))
+            
+        }
+        return button1
+    }
+
+    function createImage(domain){
+         var img1=tag('img')
+        if(domain){
+            img1.src='http://'+domain+'/favicon.ico'
+        }else{
+            img1.src='//i.loli.net/2019/02/27/5c76629caa708.jpg'
+        }
+        img1.onerror = function(xxx){
+            xxx.target.src = '//i.loli.net/2019/02/27/5c76629caa708.jpg'
+        }
+        return img1
+    }
+
+
+    </script>
+</body>
+</html>
